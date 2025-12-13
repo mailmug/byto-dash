@@ -14,8 +14,8 @@ This dashboard allows you to manage data, visualize metrics, and interact with A
 
 ## Tech Stack
 
-- **Backend:** FastAPI, Pydantic, SQLAlchemy, PostgreSQL / SQLite
-- **Frontend:** SvelteKit, TailwindCSS / DaisyUI (optional)
+- **Backend:** FastAPI, Pydantic, SQLAlchemy, PostgreSQL 
+- **Frontend:** SvelteKit, TailwindCSS  
 - **Authentication:** JWT / OAuth (optional)
 - **Deployment:** Docker / Uvicorn / Nginx
 

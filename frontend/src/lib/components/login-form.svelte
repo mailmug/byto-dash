@@ -95,6 +95,9 @@
 						</a>
 					</div>
 					<Input id="password-{id}" bind:value={password} type="password" aria-invalid={errors.password?.length > 0}   onblur={()=>validate('password')}/>
+					{#if errors.password?.length}   
+						<p class="text-sm text-red-500 mt-1">{errors.password[0]}</p>
+					{/if}
 				</Field>
 				{#if error}
 					<p class="text-sm text-center text-red-500 mt-1">{error}</p>
