@@ -19,12 +19,3 @@ This dashboard allows you to manage data, visualize metrics, and interact with A
 - **Authentication:** JWT / OAuth (optional)
 - **Deployment:** Docker / Uvicorn / Nginx
 
-## Installation
-
-### Backend (FastAPI)
-
-1. Clone the repository:
-
-```bash
-git clone https://github.com/yourusername/fastapi-svelte-dashboard.git
-cd fastapi-svelte-dashboard/backend
