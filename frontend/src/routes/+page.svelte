@@ -7,3 +7,4 @@
 </script>
  
 <Button>Click me</Button>
+<a href="/svelte/login">login</a>
