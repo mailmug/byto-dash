@@ -82,7 +82,7 @@
 			<FieldGroup>
 				<Field>
 					<FieldLabel for="email-{id}">Email</FieldLabel>
-					<Input  id="email-{id}" bind:value={email} type="email" placeholder="m@example.com" aria-invalid={errors.email?.length > 0} onblur={()=>validate('email')} />
+					<Input  id="email-{id}" type="email" placeholder="m@example.com" aria-invalid={errors.email?.length > 0} onblur={()=>validate('email')} />
 				{#if errors.email?.length}   
 					<p class="text-sm text-red-500 mt-1">{errors.email[0]}</p>
 				{/if}
@@ -121,7 +121,7 @@
 						Login with Google
 					</Button>
 					<FieldDescription class="text-center">
-						Don't have an account? <a href="">Sign up</a>
+						Don't have an account? <a href="/register">Sign up</a>
 					</FieldDescription>
 				</Field>
 			</FieldGroup>
