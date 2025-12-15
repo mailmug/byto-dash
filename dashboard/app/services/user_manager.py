@@ -1,5 +1,4 @@
 from email.message import EmailMessage
-import smtplib
 import uuid
 
 from fastapi import Depends, Request, HTTPException, status, BackgroundTasks
@@ -14,6 +13,7 @@ from app.core.config import settings
 from app.models.user import User
 from app.services.user_db import get_user_db
 import asyncio
+from app.mail.service import send_verification_email
 
 
 class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
@@ -48,33 +48,11 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     async def on_after_request_verify(
         self, user: User, token: str, request: Request | None = None
     ):
-
         asyncio.create_task(
-            send_verification_email(user, token)
+            send_verification_email(user.email, token)
         )
-        
         print(f"Verification requested for user {user.id}. Verification token: {token}")
 
-
-async def send_verification_email(user: User, token: str):
-    message = f"Verification requested for user {user.id}. Verification token: {token}"
-
-    msg = EmailMessage()
-    msg["From"] = settings.MAIL_FROM_ADDRESS
-    msg["To"] = user.email
-    msg["Subject"] = "Verify your email"
-    msg.set_content(
-        f"""
-    Verification requested.
-
-    Your verification token:
-    {token}
-    """
-    )
-
-    with smtplib.SMTP(settings.MAIL_HOST, settings.MAIL_PORT) as server:
-        server.login(settings.MAIL_USERNAME, settings.MAIL_PASSWORD)
-        server.send_message(msg)
 
 
 async def get_user_manager(user_db: SQLAlchemyUserDatabase = Depends(get_user_db)):

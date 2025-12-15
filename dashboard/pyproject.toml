@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
+    "aiosmtplib>=4.0.2",
     "asyncpg>=0.31.0",
     "fastapi-cli>=0.0.16",
     "fastapi-users[sqlalchemy]>=14.0.2",

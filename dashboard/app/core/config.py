@@ -1,6 +1,9 @@
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
+    FRONTEND_URL: str
+    APP_NAME: str
+
     # PostgreSQL Database
     DB_USER: str
     DB_PASSWORD: str
