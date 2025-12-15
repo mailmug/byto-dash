@@ -1,6 +1,8 @@
+from email.message import EmailMessage
+import smtplib
 import uuid
 
-from fastapi import Depends, Request, HTTPException, status
+from fastapi import Depends, Request, HTTPException, status, BackgroundTasks
 from fastapi_users import BaseUserManager, FastAPIUsers, UUIDIDMixin, models
 from fastapi_users.authentication import (
     AuthenticationBackend,
@@ -8,14 +10,16 @@ from fastapi_users.authentication import (
     JWTStrategy,
 )
 from fastapi_users.db import SQLAlchemyUserDatabase
-
 from app.core.config import settings
 from app.models.user import User
 from app.services.user_db import get_user_db
+import asyncio
+
 
 class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     reset_password_token_secret = settings.DATABASE_URL
     verification_token_secret = settings.DATABASE_URL
+
 
     async def authenticate(self, credentials):
         user = await super().authenticate(credentials)
@@ -29,19 +33,48 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
                 }
             )
         return user
+    
 
     async def on_after_register(self, user: User, request: Request | None = None):
         print(f"User {user.id} has registered.")
+
 
     async def on_after_forgot_password(
         self, user: User, token: str, request: Request | None = None
     ):
         print(f"User {user.id} has forgot their password. Reset token: {token}")
 
+
     async def on_after_request_verify(
         self, user: User, token: str, request: Request | None = None
     ):
+
+        asyncio.create_task(
+            send_verification_email(user, token)
+        )
+        
         print(f"Verification requested for user {user.id}. Verification token: {token}")
+
+
+async def send_verification_email(user: User, token: str):
+    message = f"Verification requested for user {user.id}. Verification token: {token}"
+
+    msg = EmailMessage()
+    msg["From"] = settings.MAIL_FROM_ADDRESS
+    msg["To"] = user.email
+    msg["Subject"] = "Verify your email"
+    msg.set_content(
+        f"""
+    Verification requested.
+
+    Your verification token:
+    {token}
+    """
+    )
+
+    with smtplib.SMTP(settings.MAIL_HOST, settings.MAIL_PORT) as server:
+        server.login(settings.MAIL_USERNAME, settings.MAIL_PASSWORD)
+        server.send_message(msg)
 
 
 async def get_user_manager(user_db: SQLAlchemyUserDatabase = Depends(get_user_db)):

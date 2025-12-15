@@ -8,6 +8,12 @@ class Settings(BaseSettings):
     DB_PORT: int = 5432
     DB_NAME: str
 
+    MAIL_HOST: str
+    MAIL_PORT: int
+    MAIL_USERNAME: str
+    MAIL_PASSWORD: str
+    MAIL_FROM_ADDRESS: str
+
     # JWT Config
     JWT_SECRET: str
     JWT_ALGORITHM: str = "HS256"
