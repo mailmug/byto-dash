@@ -18,3 +18,15 @@ export const register = (name: string, email: string, password: string) =>
 			password:password
 		})
 	});
+
+function sleep(ms:any) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
+export const me = () =>
+	api('/users/me', {
+		method: 'GET',
+		headers: { 
+			'Content-Type': 'application/json',
+			'Authorization': 'Bearer ' + localStorage.getItem('token')
+		},
+	});

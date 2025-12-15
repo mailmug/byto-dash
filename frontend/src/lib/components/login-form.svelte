@@ -10,10 +10,11 @@
 	} from "$lib/components/ui/field/index.js";
 	import { z } from "zod";
 
-	import { login } from '$lib/services/auth.service';
+	import { login, me } from '$lib/services/auth.service';
 	import { auth } from '$lib/stores/auth.store';
 	import { goto } from '$app/navigation';
-	import { registerSchema } from '$lib/validation/auth.schema';
+	import { loginSchema } from "$lib/validation/login.schema";
+    import { onMount } from "svelte";
 
 	const id = $props.id();
 
@@ -27,13 +28,11 @@
 	function validate(field?: 'email' | 'password') {
 		let result;
 		if (field) {
-
 			const value = field === 'email' ? { email } : { password };
-			const schema = registerSchema.pick({ [field]: true });
+			const schema = loginSchema.pick({ [field]: true });
 			result = schema.safeParse(value);
-
 		} else {
-			result = registerSchema.safeParse({ email, password });
+			result = loginSchema.safeParse({ email, password });
 		}
 		if (!result.success) { 
 			errors = z.flattenError(result.error).fieldErrors;
@@ -62,13 +61,31 @@
 
 			localStorage.setItem('token', data.access_token);
 
-			goto('/dashboard');
+			const user = await me();
+			if(!user.is_verified){
+				goto('/verify-user')
+			}
+			if(user.is_verified){
+				goto('/dashboard');
+			}
 		} catch (e: any) {
 			error = e?.detail.message || 'Invalid login credentials';
 		} finally {
 			loading = false;
 		}
 	}
+
+	onMount(()=>{
+		me().then((data)=>{ 
+			console.log(data)
+			if(data.is_verified){  
+				goto('/dashboard');
+			}
+			if(data.is_verified === false){  
+				goto('/verify-user');
+			}
+		})
+	})
 
 </script>
 
@@ -82,21 +99,21 @@
 			<FieldGroup>
 				<Field>
 					<FieldLabel for="email-{id}">Email</FieldLabel>
-					<Input  id="email-{id}" type="email" placeholder="m@example.com" aria-invalid={errors.email?.length > 0} onblur={()=>validate('email')} />
-				{#if errors.email?.length}   
-					<p class="text-sm text-red-500 mt-1">{errors.email[0]}</p>
+					<Input  id="email-{id}" type="email"  aria-invalid={errors.email?.length > 0} bind:value={email} onblur={()=>validate('email')} />
+				{#if errors.email}   
+					<p class="text-sm text-red-500 mt-1">{errors.email}</p>
 				{/if}
 				</Field>
 				<Field>
 					<div class="flex items-center">
 						<FieldLabel for="password-{id}">Password</FieldLabel>
-						<a href="" class="ms-auto inline-block text-sm underline">
+						<a href="/forgot-password" class="ms-auto inline-block text-sm underline">
 							Forgot your password?
 						</a>
 					</div>
-					<Input id="password-{id}" bind:value={password} type="password" aria-invalid={errors.password?.length > 0}   onblur={()=>validate('password')}/>
-					{#if errors.password?.length}   
-						<p class="text-sm text-red-500 mt-1">{errors.password[0]}</p>
+					<Input id="password-{id}" type="password" aria-invalid={errors.password?.length > 0}  bind:value={password}   onblur={()=>validate('password')}/>
+					{#if errors.password}   
+						<p class="text-sm text-red-500 mt-1">{errors.password}</p>
 					{/if}
 				</Field>
 				{#if error}
@@ -111,7 +128,7 @@
 							Login
 						{/if}
 					</Button>
-					<Button variant="outline" class="w-full">
+					<!-- <Button variant="outline" class="w-full">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
 							<path
 								d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
@@ -119,7 +136,7 @@
 							/>
 						</svg>
 						Login with Google
-					</Button>
+					</Button> -->
 					<FieldDescription class="text-center">
 						Don't have an account? <a href="/register">Sign up</a>
 					</FieldDescription>
