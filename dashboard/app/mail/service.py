@@ -5,6 +5,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from app.core.config import settings
 from app.mail.client import send_message
 from app.mail.schemas import EmailSchema
+from app.models.user import User
 
 import pathlib
 
@@ -16,7 +17,7 @@ env = Environment(
 )
 
 
-async def send_email(data: EmailSchema):
+def send_email(data: EmailSchema):
     msg = EmailMessage()
     msg["From"] = settings.MAIL_FROM_ADDRESS
     msg["To"] = data.to
@@ -27,10 +28,10 @@ async def send_email(data: EmailSchema):
 
     msg.add_alternative(data.html, subtype="html")
 
-    await send_message(msg)
+    send_message(msg)
 
 
-async def send_verification_email(email: str, token: str):
+def send_verification_email(user: User, token: str):
     template = env.get_template("verify_email.html")
 
     html = template.render(
@@ -47,9 +48,9 @@ async def send_verification_email(email: str, token: str):
         {token}
     """
 
-    await send_email(
+    send_email(
         EmailSchema(
-            to=email,
+            to=user.email,
             subject="Verify Your Email",
             html=html,
             text=text,
