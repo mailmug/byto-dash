@@ -36,7 +36,7 @@ def send_verification_email(user: User, token: str):
 
     html = template.render(
         token=token,
-        verify_url=f"{settings.FRONTEND_URL}/verify?token={token}",
+        verify_url=f"{settings.FRONTEND_URL}/verify-user?email-token={token}",
         year=datetime.now().year,
         app_name=settings.APP_NAME
     )

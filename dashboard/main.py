@@ -1,12 +1,13 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException, status
 # from app.api.v1 import auth, users
 from contextlib import asynccontextmanager
 from app.api.v1 import posts
-from app.services.user_manager import auth_backend, current_active_user, fastapi_users
-from app.schemas.user import UserRead, UserCreate, UserUpdate
+from app.services.user_manager import auth_backend, current_active_user, fastapi_users, get_jwt_strategy
+from app.schemas.user import RegisterWithTokenResponse, UserRead, UserCreate, UserUpdate
 from app.models.user import User
 from app.db.session import create_db_and_tables
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi_users.exceptions import UserAlreadyExists
 
 
 @asynccontextmanager
@@ -36,11 +37,36 @@ app.add_middleware(
 app.include_router(
     fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"]
 )
-app.include_router(
-    fastapi_users.get_register_router(UserRead, UserCreate),
-    prefix="/auth",
-    tags=["auth"],
+# app.include_router(
+#     fastapi_users.get_register_router(UserRead, UserCreate),
+#     prefix="/auth",
+#     tags=["auth"],
+# )
+
+@app.post(
+    "/auth/register",
+    response_model=RegisterWithTokenResponse,
 )
+async def register_and_login(
+    user_create: UserCreate,
+    user_manager=Depends(fastapi_users.get_user_manager),
+):
+    try:
+        user = await user_manager.create(user_create)
+    except UserAlreadyExists:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="REGISTER_USER_ALREADY_EXISTS",
+        )
+
+    strategy = get_jwt_strategy()
+    token = await strategy.write_token(user)
+
+    return RegisterWithTokenResponse(
+        user=UserRead.model_validate(user),
+        token=token,
+    )
+    
 app.include_router(
     fastapi_users.get_reset_password_router(),
     prefix="/auth",

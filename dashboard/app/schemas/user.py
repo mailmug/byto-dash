@@ -1,4 +1,5 @@
 import uuid
+from pydantic import BaseModel
 
 from fastapi_users import schemas
 
@@ -13,3 +14,7 @@ class UserCreate(schemas.BaseUserCreate):
 
 class UserUpdate(schemas.BaseUserUpdate):
     name: str
+
+class RegisterWithTokenResponse(BaseModel):
+    user: UserRead
+    token: str
