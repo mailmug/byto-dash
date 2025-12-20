@@ -11,7 +11,7 @@
 	import { z } from "zod";
 
 	import { login, me } from '$lib/services/auth.service';
-	import { auth } from '$lib/stores/auth.store';
+	import { authStore } from '$lib/stores/auth.store';
 	import { goto } from '$app/navigation';
 	import { loginSchema } from "$lib/validation/login.schema";
     import { onMount } from "svelte";
@@ -54,7 +54,7 @@
 		try {
 			const data = await login(email, password);
 
-			auth.set({
+			authStore.set({
 				token: data.access_token,
 				user: data.user ?? null
 			});
@@ -77,7 +77,7 @@
 
 	onMount(()=>{
 		me().then((data)=>{ 
-			console.log(data)
+	
 			if(data.is_verified){  
 				goto('/dashboard');
 			}

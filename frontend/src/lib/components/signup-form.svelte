@@ -13,6 +13,8 @@
 	let { class: className, ...restProps }: HTMLAttributes<HTMLDivElement> = $props();
 
 	import { registerSchema } from "$lib/validation/register.schema";
+    import { api } from "@/services/http";
+    import { authStore } from "@/stores/auth.store";
 
 	let name = $state('');
 	let email = $state('');
@@ -75,9 +77,24 @@
 
 		try {
 			const data = await register(name, email, password);
-			if(data.id){
+			if(data?.user?.id){
+
+				authStore.set({
+					token: data.token,
+					user: data.user
+				});
+
+				localStorage.setItem('token', data.token);
+
 				msg = 'Account created successfully. Please login.';
 				resetForm();
+				api('/auth/request-verify-token', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body:  JSON.stringify({
+						email: data.user.email
+					})
+				});
 				setTimeout(()=>goto('/login'), 3000);
 			}
 		} catch (e: any) {

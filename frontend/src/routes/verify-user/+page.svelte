@@ -3,9 +3,18 @@
 	import { Button } from "$lib/components/ui/button";
 	import * as Card from "$lib/components/ui/card";
     import { me } from "@/services/auth.service";
+    import { api } from "@/services/http";
     import { onMount } from "svelte";
+	import { authStore } from '$lib/stores/auth.store';
+	import { page } from "$app/state";
+	import { toast } from "svelte-sonner";
+    import { apiErrorMap } from "@/errors/api-error-map";
+	let error = $state('');
 
 	let loading = false;
+
+	const emailToken = page.url.searchParams.get("email-token");
+	let errors = $state<Record<string, string[]>>({});
 
 	async function logout() {  
 		loading = true;
@@ -18,12 +27,57 @@
 	}
 
 	async function resendVerification() {
-		// await auth.resendVerification();
-		console.log("resend verification");
+		api('/auth/request-verify-token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:  JSON.stringify({
+                email: $authStore.user?.email
+            })
+        });
 	}
 
     onMount(()=>{
+
+		if(emailToken){
+			
+			api('/auth/verify', {
+				method: 'POST',
+				headers: { 
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ token: emailToken })
+				})
+				.then((data) => {
+					if (data.id) {
+						toast.success("Email verified successfully!");
+						goto('/dashboard');
+					} else {
+						toast.error("Verification failed!");
+					}
+				})
+				.catch((e: any) => {
+					const detail = e?.detail;
+					const mapped = apiErrorMap[detail];
+				
+					if (mapped) {
+						
+						toast.error(mapped.message);
+						error = mapped.message;
+						
+					} else {
+						toast.error("Something went wrong");
+					}
+				}
+			);
+		}
+
+
 		me().then((data)=>{ 
+            authStore.set({
+                token: localStorage.getItem('token'),
+                user: data
+            });
+
 			if(data.is_verified === true){  
 				goto('/dashboard');
 			}
