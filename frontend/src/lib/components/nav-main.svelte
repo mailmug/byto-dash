@@ -6,7 +6,9 @@
 	import type { Icon } from "@tabler/icons-svelte";
     import { goto } from "$app/navigation";
 	import { pageTitle } from '$lib/stores/title';
-
+    import { page } from "$app/state";
+    import { cn } from "@/utils";
+	
 	let { items }: { items: { title: string; url: string; icon?: Icon }[] } = $props();
 </script>
 
@@ -34,7 +36,13 @@
 		<Sidebar.Menu>
 			{#each items as item (item.title)}
 				<Sidebar.MenuItem>
-					<Sidebar.MenuButton onclick={()=>{pageTitle.set(item.title); goto(item.url);} }
+					<Sidebar.MenuButton  
+					class={cn(
+						'hover:bg-muted hover:text-foreground',
+						page.url.pathname === item.url &&
+						'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground cursor-default'
+					)}
+					onclick={()=>{pageTitle.set(item.title); goto(item.url);} }
 					tooltipContent={item.title}>
 						{#if item.icon}
 							<item.icon />
