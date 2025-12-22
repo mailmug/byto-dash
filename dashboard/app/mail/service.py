@@ -56,3 +56,30 @@ def send_verification_email(user: User, token: str):
             text=text,
         )
     )
+
+
+def send_reset_password_email(user: User, token: str):
+    template = env.get_template("reset_password.html")
+
+    html = template.render(
+        token=token,
+        verify_url=f"{settings.FRONTEND_URL}/reset-password",
+        year=datetime.now().year,
+        app_name=settings.APP_NAME
+    )
+
+    text = f"""
+        Verify Your Email.
+
+        Token:
+        {token}
+    """
+
+    send_email(
+        EmailSchema(
+            to=user.email,
+            subject="Verify Your Email",
+            html=html,
+            text=text,
+        )
+    )

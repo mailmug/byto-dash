@@ -9,6 +9,9 @@ from app.db.session import create_db_and_tables
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_users.exceptions import UserAlreadyExists
 
+from app.api.v1 import users
+from app.api.v1 import auth
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -30,7 +33,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# app.include_router(auth.router, prefix="/api/v1", tags=["Auth"])
+app.include_router(auth.router, prefix="/api/v1", tags=["Auth"])
 # app.include_router(users.router, prefix="/api/v1", tags=["Users"])
 
 

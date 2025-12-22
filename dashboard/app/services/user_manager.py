@@ -12,7 +12,7 @@ from fastapi_users.db import SQLAlchemyUserDatabase
 from app.core.config import settings
 from app.models.user import User
 from app.services.user_db import get_user_db
-from app.mail.service import send_verification_email
+from app.mail.service import send_verification_email, send_reset_password_email
 
 
 class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
@@ -35,14 +35,17 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
             )
         return user
     
-
+    async def update_password(self, user: User, password: str):
+        user.hashed_password = self.password_helper.hash(password)
+    
     async def on_after_register(self, user: User, request: Request | None = None):
         print(f"User {user.id} has registered.")
 
 
     async def on_after_forgot_password(
         self, user: User, token: str, request: Request | None = None
-    ):
+    ):  
+        self.background_tasks.add_task(send_reset_password_email, user, token)
         print(f"User {user.id} has forgot their password. Reset token: {token}")
 
 
