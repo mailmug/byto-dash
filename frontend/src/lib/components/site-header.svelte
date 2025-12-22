@@ -2,7 +2,7 @@
 	import { Button } from "$lib/components/ui/button/index.js";
 	import { Separator } from "$lib/components/ui/separator/index.js";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
-	import { pageTitle } from '$lib/stores/title';
+    import { pageTitle } from "$lib/stores/title";
 </script>
 
 <header

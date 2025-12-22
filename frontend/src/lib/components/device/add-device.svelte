@@ -24,6 +24,13 @@
         { value: "other", label: "other" },
     ];
 
+    function resetForm(){
+        deviceName  = "";
+        description = "";
+        deviceType = "";
+        errors = {};
+    }
+
     const triggerContent = $derived(
         deviceTypes.find((f) => f.value === deviceType)?.label ?? "Select a device type"
     );
@@ -64,9 +71,7 @@
                 toast.success("Device added successfully");
                 open = false;
                 loading = false;
-                deviceName  = "";
-                description = "";
-                deviceType = "";
+                resetForm();
             }
         });
     }
@@ -150,14 +155,16 @@
                 </Field.Field>
 
             <Dialog.Footer class="flex flex-row justify-center gap-2">
-                <Dialog.Close>
-                    <Button
-                        variant="secondary"
-                        class="flex-1 sm:flex-none"
-                    >
-                        Cancel
-                    </Button>
-                </Dialog.Close>
+                <Button
+                    variant="secondary"
+                    class="flex-1 sm:flex-none"
+                    onclick={()=>{
+                        open = false;
+                        resetForm();
+                    }}
+                >
+                    Cancel
+                </Button>
 
                 <Button
                     type="submit"

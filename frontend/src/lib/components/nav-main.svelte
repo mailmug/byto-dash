@@ -5,9 +5,9 @@
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
 	import type { Icon } from "@tabler/icons-svelte";
     import { goto } from "$app/navigation";
-	import { pageTitle } from '$lib/stores/title';
     import { page } from "$app/state";
     import { cn } from "@/utils";
+    import { pageTitle } from "@/stores/title";
 	
 	let { items }: { items: { title: string; url: string; icon?: Icon }[] } = $props();
 </script>
@@ -42,7 +42,7 @@
 						page.url.pathname === item.url &&
 						'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground'
 					)}
-					onclick={()=>{pageTitle.set(item.title); goto(item.url);} }
+					onclick={()=>{goto(item.url); pageTitle.set(item.title)} }
 					tooltipContent={item.title}>
 						{#if item.icon}
 							<item.icon />

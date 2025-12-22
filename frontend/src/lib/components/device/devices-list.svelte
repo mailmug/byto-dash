@@ -7,28 +7,32 @@
     import { Badge } from "$lib/components/ui/badge";
     import ArrowRight from "@tabler/icons-svelte/icons/arrow-right";
     import Label from "../ui/label/label.svelte";
+    import { onMount } from "svelte";
+    import { api } from "@/services/http";
+    
+    type Device = {
+        id: number;
+        name: string;
+        device_type: string;
+        status: "online" | "offline";
+        isOn: boolean;
+        last_active: string;
+        description?: string;
+    };
 
+    let devices = $state<Device[]>([]);      
 
-    let devices: any[] = [
-        {
-            id: 1,
-            name: "Living Room Light",
-            device_type: "Switch",
-            status: "online",
-            isOn: true,
-            last_active: "2 minutes ago",
-            description: "Main ceiling light in living room"
-        },
-        {
-            id: 2,
-            name: "Bedroom Fan",
-            device_type: "Switch",
-            status: "offline",
-            isOn: false,
-            last_active: "1 hour ago",
-            description: "Ceiling fan with remote control"
-        }
-    ];
+    onMount(()=>{
+          api('/api/v1/devices/', {
+            method: 'GET',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            },
+        }).then(data=>{
+            devices = data;
+        });
+    });
 
     let showEditDeviceModal = false;
     let editDeviceData = null;

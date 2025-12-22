@@ -3,6 +3,7 @@
 	import { Button } from "$lib/components/ui/button";
 	import { authStore } from "$lib/stores/auth.store";
 	import { goto } from "$app/navigation";
+    import { pageTitle } from "$lib/stores/title";
 
 	let open = $state(true);
 
@@ -29,7 +30,7 @@
             <Dialog.Footer class="gap-2 sm:justify-end">
                 <Button
                     variant="outline"
-                    onclick={()=>goto('/dashboard')}
+                    onclick={()=>{goto('/dashboard'); pageTitle.set('Dashboard')}}
                 >
                     Cancel
                 </Button>
