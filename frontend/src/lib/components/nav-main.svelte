@@ -38,9 +38,9 @@
 				<Sidebar.MenuItem>
 					<Sidebar.MenuButton  
 					class={cn(
-						'hover:bg-muted hover:text-foreground',
+						'hover:bg-muted hover:text-foreground cursor-pointer',
 						page.url.pathname === item.url &&
-						'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground cursor-default'
+						'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground'
 					)}
 					onclick={()=>{pageTitle.set(item.title); goto(item.url);} }
 					tooltipContent={item.title}>

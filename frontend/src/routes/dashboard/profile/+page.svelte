@@ -178,7 +178,7 @@
                     />
                 </Field.Field>
                 <Field.Field orientation="horizontal">
-                    <Button type="submit" disabled={loading}>
+                    <Button type="submit" disabled={loading} class="cursor-pointer">
 						{#if loading}
 							<span class="loader w-4 h-4 border-2 border-t-transparent rounded-full animate-spin"></span>
 							Updating...
@@ -225,7 +225,7 @@
                     {/if}
                 </Field.Field>
                 <Field.Field orientation="horizontal">
-                    <Button type="submit" disabled={psdLoading}>
+                    <Button type="submit" disabled={psdLoading} class="cursor-pointer">
 						{#if psdLoading}
 							<span class="loader w-4 h-4 border-2 border-t-transparent rounded-full animate-spin"></span>
 							Updating...

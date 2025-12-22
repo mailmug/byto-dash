@@ -9,7 +9,6 @@
     import * as Field from "$lib/components/ui/field";
     import { api } from "@/services/http";
     import { toast } from "svelte-sonner";
-    import { authStore } from "@/stores/auth.store";
 
     let deviceName  = $state("");
     let description = $state("");
@@ -75,7 +74,7 @@
 
 <Dialog.Root bind:open>
     <Dialog.Trigger class="w-full sm:w-auto flex items-center justify-center gap-2">
-        <Button size='lg' class="w-full sm:w-auto flex items-center justify-center gap-2">
+        <Button size='lg' class="w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer">
             <Plus class="h-4 w-4" />
             Add Device
         </Button>
