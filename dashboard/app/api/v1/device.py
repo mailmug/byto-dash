@@ -7,6 +7,7 @@ from app.services.user_manager import current_active_user
 from app.models.user import User
 from app.db.session import get_async_session
 from app.schemas.device import DeviceCreate, DeviceRead
+from sqlalchemy.future import select
 
 router = APIRouter()
 
@@ -31,9 +32,11 @@ async def create_device(
 
 
 @router.get("/", response_model=List[DeviceRead])
-async def list_Devices(
+async def list_devices(
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session)
 ):
-    result = await session.execute(Device.__table__.select())
-    return result.scalars().all()
+    stmt = select(Device).where(Device.user_id == user.id)
+    result = await session.execute(stmt)
+    devices = result.scalars().all()
+    return devices

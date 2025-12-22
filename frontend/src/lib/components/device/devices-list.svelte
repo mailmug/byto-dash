@@ -12,9 +12,9 @@
     
     type Device = {
         id: number;
-        name: string;
-        device_type: string;
-        status: "online" | "offline";
+        title: string;
+        type: string;
+        status: string;
         isOn: boolean;
         last_active: string;
         description?: string;
@@ -60,7 +60,7 @@
 {#each devices as device (device.id)}
     <Card>
         <CardHeader>
-            <CardTitle class="text-xl">{device.name}</CardTitle>
+            <CardTitle class="text-xl">{device.title}</CardTitle>
         </CardHeader>
 
         <CardContent class="space-y-4">
@@ -86,7 +86,7 @@
                     </p>
                 </div>
 
-                {#if device.device_type === "Switch"}
+                {#if device.type === "Switch"}
                     <Switch
                         disabled={device.status=='offline'}
                         checked={device.isOn}
@@ -98,7 +98,7 @@
             <!-- Device Info -->
             <div class="rounded-md bg-muted p-3 text-sm text-muted-foreground space-y-1">
                 <p>
-                    <strong>Type:</strong> {device.device_type}
+                    <strong>Type:</strong> {device.type}
                 </p>
                 <p>{device.description}</p>
             </div>
