@@ -11,6 +11,7 @@ from fastapi_users.exceptions import UserAlreadyExists
 
 from app.api.v1 import users
 from app.api.v1 import auth
+from app.api.v1 import device
 
 
 @asynccontextmanager
@@ -33,9 +34,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(auth.router, prefix="/api/v1", tags=["Auth"])
-# app.include_router(users.router, prefix="/api/v1", tags=["Users"])
-
 
 app.include_router(
     fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"]
@@ -91,5 +89,6 @@ app.include_router(
 async def authenticated_route(user: User = Depends(current_active_user)):
     return {"message": f"Hello {user.email}!"}
 
-
-app.include_router(posts.router, prefix="/posts", tags=["posts"])
+app.include_router(auth.router, prefix="/api/v1", tags=["Auth"])
+app.include_router(posts.router, prefix="/api/v1/posts", tags=["posts"])
+app.include_router(device.router, prefix="/api/v1/devices", tags=["devices"])

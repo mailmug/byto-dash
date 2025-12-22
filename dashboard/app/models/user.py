@@ -13,7 +13,18 @@ from app.models.base import Base
 class User(SQLAlchemyBaseUserTableUUID, Base):
     __tablename__ = "users"
     name = Column(String(100), nullable=True)
-    posts = relationship("Post", back_populates="user", cascade="all, delete-orphan")
+
+    posts = relationship(
+        "Post",
+        back_populates="user",
+        cascade="all, delete-orphan"
+    )
+
+    devices = relationship(
+        "Device",
+        back_populates="user",
+        cascade="all, delete-orphan"
+    )
 
 
 
