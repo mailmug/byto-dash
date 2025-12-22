@@ -9,8 +9,9 @@
     import { me } from "@/services/auth.service";
     import { api } from "@/services/http";
     import { authStore } from "@/stores/auth.store";
-    import { registerSchema } from "@/validation/register.schema";
+    import { passwordSchema, registerSchema } from "@/validation/register.schema";
     import { onMount } from "svelte";
+    import { toast } from "svelte-sonner";
 	import { z } from "zod";
 
     let name = $state('');
@@ -18,10 +19,26 @@
 	let password = $state('');
 	let confirmPassword = $state('');
 	let loading = $state(false);
+	let psdLoading = $state(false);
 	let error = $state('');
 	let msg = $state('');
 	
 	let errors = $state<Record<string, string[]>>({});
+
+    function validatePasswords() {
+		let result;
+        psdLoading = true;
+		result = passwordSchema
+				.safeParse({ password, confirmPassword });
+		 
+		if (!result.success) {  
+			errors = z.flattenError(result.error).fieldErrors;
+			psdLoading = false; 
+			return false; 
+		}
+		errors = {};
+		return true;
+	} 
 
 	function validate(field?: 'name' | 'email' | 'password' | 'confirmPassword') {
 		let result;
@@ -61,7 +78,7 @@
 
     function passwordUpdate(event: SubmitEvent){
 		event.preventDefault();   
-        if (!validate()) {  
+        if (!validatePasswords()) {  
 			loading = false;  
 			return false;  
 		}
@@ -70,6 +87,7 @@
 
     function profileUpdate(event: SubmitEvent){  
 		event.preventDefault(); 
+        loading = true; 
 
         if (!validate('name')) {  
 			loading = false; 
@@ -77,7 +95,6 @@
 		}
 
         try {
-            loading = true; 
             let profileData: Record<string, string> = {};
             if (name) profileData.name = name;
             if (password) profileData.password = password;
@@ -92,6 +109,7 @@
 			}).then(data=>{
                 if(data?.id){
                     msg = 'Updated successfully.';
+                    toast.success(msg);
                 }
             });
 		} catch (e: any) {
@@ -112,6 +130,7 @@
 			}
 		} finally {
 			loading = false;
+			psdLoading = false;
 		}
     }
 
@@ -161,7 +180,13 @@
                     />
                 </Field.Field>
                 <Field.Field orientation="horizontal">
-                    <Button type="submit">Update</Button>
+                    <Button type="submit" disabled={loading}>
+						{#if loading}
+							<span class="loader w-4 h-4 border-2 border-t-transparent rounded-full animate-spin"></span>
+							Updating...
+						{:else}
+							Update
+						{/if}Update</Button>
                 </Field.Field>
             </Field.Group>
             
@@ -202,8 +227,8 @@
                     {/if}
                 </Field.Field>
                 <Field.Field orientation="horizontal">
-                    <Button type="submit" disabled={loading}>
-						{#if loading}
+                    <Button type="submit" disabled={psdLoading}>
+						{#if psdLoading}
 							<span class="loader w-4 h-4 border-2 border-t-transparent rounded-full animate-spin"></span>
 							Updating...
 						{:else}

@@ -2,12 +2,9 @@
 	import { Button } from "$lib/components/ui/button/index.js";
 	import * as Card from "$lib/components/ui/card/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
-	import {
-		FieldGroup,
-		Field,
-		FieldLabel,
-		FieldDescription,
-	} from "$lib/components/ui/field/index.js";
+	import * as Field from "$lib/components/ui/field/index.js";
+
+
 	import { z } from "zod";
 	import { page } from "$app/state";
 
@@ -17,10 +14,12 @@
     import { onMount } from "svelte";
     import { api } from "@/services/http";
     import { toast } from "svelte-sonner";
+    import { passwordSchema, registerSchema } from "@/validation/register.schema";
 
 	const id = $props.id();
 
-	let email = $state('');
+	let password = $state('');
+	let confirmPassword = $state('');
 	let loading = $state(false);
 	let error = $state('');
 	let msg = $state('');
@@ -29,12 +28,12 @@
 
 	let errors = $state<Record<string, string[]>>({});
 
-	function validate(field: 'email') {
+	function validate() {
 		let result;
-		const value = { email };
-		const schema = loginSchema.pick({ [field]: true });
-		result = schema.safeParse(value);
-		if (!result.success) { 
+		result = passwordSchema
+				.safeParse({ password, confirmPassword });
+		 
+		if (!result.success) {  
 			errors = z.flattenError(result.error).fieldErrors;
 			loading = false; 
 			return false; 
@@ -43,24 +42,33 @@
 		return true;
 	}  
 
+	function validatePasswordOnly() {
+		const schema = passwordSchema.pick({ password: true });
+		const result = schema.safeParse({ password });
+
+		if (!result.success) {
+			errors = z.flattenError(result.error).fieldErrors;
+		}
+	}
+
 
 	async function handleRest(event: SubmitEvent) {
 		event.preventDefault();
 		error = '';
 		loading = true;
 		
-		if (!validate('email')){
+		if (!validate()){
 			loading = false;
 			return;
 		}
 
 		try {
-            api('/auth/forgot-password', {
+            api('/auth/reset-password', {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
                 },
-                body:  JSON.stringify({email})
+                body:  JSON.stringify({token: emailToken, password: password})
 			}).then(data=>{
 				msg = "Check your inbox for instructions!"
                 toast.success(msg);
@@ -75,6 +83,7 @@
 	}
 
 	onMount(()=>{
+		
 		me().then((data)=>{ 
 	
 			if(data.is_verified){  
@@ -95,40 +104,30 @@
 				Reset your password
 			</Card.Title>
 			<Card.Description class="text-sm text-muted-foreground">
-				Enter your email to continue or
+				Or
 				<a href="/login" class="font-medium text-primary hover:underline">
-					sign in
+					sign in to your account
 				</a>
 			</Card.Description>
 		</Card.Header>
 
 		<Card.Content>
 			<form class="space-y-5" onsubmit={handleRest}>
-				<FieldGroup>
-					{#if !msg}
-					<Field>
-						<FieldLabel
-							for="email-{id}"
-							class="text-sm font-medium"
-						>
-							Email address
-						</FieldLabel>
-
-						<Input
-							id="email-{id}"
-							type="email"
-							aria-invalid={errors.email?.length > 0}
-							bind:value={email}
-							onblur={() => validate('email')}
-						/>
-
-						{#if errors.email}
-							<p class="text-xs text-destructive mt-1">
-								{errors.email}
-							</p>
+				<Field.Group>
+					<Field.Field>
+						<Field.Label for="password">Password</Field.Label>
+						<Input id="password" type="password" bind:value={password} aria-invalid={errors.password?.length > 0} onblur={()=>validate()} />
+						{#if errors.password}   
+							<Field.Description>{errors.password}</Field.Description>
 						{/if}
-					</Field>
-					{/if}
+					</Field.Field>
+					<Field.Field>
+						<Field.Label for="confirm-password">Confirm Password</Field.Label>
+						<Input id="confirm-password" type="password" bind:value={confirmPassword}  aria-invalid={errors.confirmPassword?.length > 0} onblur={()=>validatePasswordOnly()} />
+						{#if errors.confirmPassword}   
+							<Field.Description>{errors.confirmPassword}</Field.Description>
+						{/if}
+					</Field.Field>
 
 					{#if error}
 						<div class="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
@@ -155,7 +154,7 @@
 						{/if}
 					</Button>
 					{/if}
-				</FieldGroup>
+				</Field.Group>
 			</form>
 		</Card.Content>
 

@@ -60,25 +60,26 @@ def send_verification_email(user: User, token: str):
 
 def send_reset_password_email(user: User, token: str):
     template = env.get_template("reset_password.html")
+    verify_url=f"{settings.FRONTEND_URL}/reset-password?email-token={token}"
 
     html = template.render(
         token=token,
-        verify_url=f"{settings.FRONTEND_URL}/reset-password",
+        verify_url=verify_url,
         year=datetime.now().year,
         app_name=settings.APP_NAME
     )
 
     text = f"""
-        Verify Your Email.
+        Reset Password Notification.
 
-        Token:
-        {token}
+        Verify:
+        {verify_url}
     """
 
     send_email(
         EmailSchema(
             to=user.email,
-            subject="Verify Your Email",
+            subject="Reset Password Notification",
             html=html,
             text=text,
         )

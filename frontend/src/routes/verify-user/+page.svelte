@@ -11,7 +11,7 @@
     import { apiErrorMap } from "@/errors/api-error-map";
 	let error = $state('');
 
-	let loading = false;
+	let loading = $state(false);
 
 	const emailToken = page.url.searchParams.get("email-token");
 	let errors = $state<Record<string, string[]>>({});
