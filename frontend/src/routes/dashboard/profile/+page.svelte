@@ -47,7 +47,7 @@
 			}
 
 		} else {
-			result = registerSchema.safeParse(valueMap);
+			result = registerSchema.safeParse({password: true, confirmPassword: true});
 		}
 
 		if (!result.success) { 
@@ -59,10 +59,17 @@
 		return true;
 	}  
 
+    function passwordUpdate(event: SubmitEvent){
+		event.preventDefault();   
+        if (!validate()) {  
+			loading = false;  
+			return false;  
+		}
+        profileUpdate(event);
+    }
+
     function profileUpdate(event: SubmitEvent){  
 		event.preventDefault(); 
-        const schema = registerSchema.pick({ name: true });
-        const result = schema.safeParse({name});
 
         if (!validate('name')) {  
 			loading = false; 
@@ -71,15 +78,17 @@
 
         try {
             loading = true; 
-			api('/api/v1/auth/update-profile', {
+            let profileData: Record<string, string> = {};
+            if (name) profileData.name = name;
+            if (password) profileData.password = password;
+
+            api('/api/v1/auth/update-profile', {
                 method: 'PATCH',
                 headers: { 
                     'Content-Type': 'application/json',
 			        'Authorization': 'Bearer ' + $authStore.token
                 },
-                body:  JSON.stringify({
-                    name: name 
-                })
+                body:  JSON.stringify(profileData)
 			}).then(data=>{
                 if(data?.id){
                     msg = 'Updated successfully.';
@@ -168,21 +177,29 @@
         </p>
     </div>
     <div class="w-full max-w-md">
-        <form>
+        <form method="post" onsubmit={passwordUpdate}>
             <Field.Group>
                 <Field.Field>
                     <Field.Label>New password *</Field.Label>
                     <Input
                         type='password'
                         bind:value={password}
+                        aria-invalid={errors.password?.length > 0} onblur={()=> validate('password')}
                     />
+                    {#if errors.password}   
+                        <Field.Description>{errors.password}</Field.Description>
+                    {/if}
                 </Field.Field>
                 <Field.Field>
                     <Field.Label>Confirm password *</Field.Label>
                     <Input 
                         bind:value={confirmPassword}
                         type='password'
+                        aria-invalid={errors.confirmPassword?.length > 0} onblur={()=> validate('confirmPassword')}
                     />
+                    {#if errors.confirmPassword}   
+                        <Field.Description>{errors.confirmPassword}</Field.Description>
+                    {/if}
                 </Field.Field>
                 <Field.Field orientation="horizontal">
                     <Button type="submit" disabled={loading}>
