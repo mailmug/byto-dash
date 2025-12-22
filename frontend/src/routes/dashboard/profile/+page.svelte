@@ -1,10 +1,8 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { Button } from "$lib/components/ui/button/index.js";
-    import { Checkbox } from "$lib/components/ui/checkbox/index.js";
     import * as Field from "$lib/components/ui/field/index.js";
     import { Input } from "$lib/components/ui/input/index.js";
-    import * as Select from "$lib/components/ui/select/index.js";
     import { apiErrorMap } from "@/errors/api-error-map";
     import { me } from "@/services/auth.service";
     import { api } from "@/services/http";

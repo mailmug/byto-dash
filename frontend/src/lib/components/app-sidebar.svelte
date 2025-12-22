@@ -27,7 +27,7 @@
 			},
 			{
 				title: "Logout",
-				url: "#",
+				url: "/dashboard/logout",
 				icon: Logout,
 			},
 		],

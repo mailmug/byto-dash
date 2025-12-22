@@ -14,7 +14,7 @@
     import { onMount } from "svelte";
     import { api } from "@/services/http";
     import { toast } from "svelte-sonner";
-    import { passwordSchema, registerSchema } from "@/validation/register.schema";
+    import { passwordSchema } from "@/validation/register.schema";
 
 	const id = $props.id();
 
