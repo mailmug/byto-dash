@@ -7,8 +7,14 @@
     import { goto } from "$app/navigation";
     import { page } from "$app/state";
     import { cn } from "@/utils";
+    import { onMount } from "svelte";
 	
 	let { items }: { items: { title: string; url: string; icon?: Icon }[] } = $props();
+	
+	let basePath = $derived(
+		page.url.pathname.split("/").slice(0, 3).join("/")
+	);
+
 </script>
 
 <Sidebar.Group>
@@ -38,7 +44,7 @@
 					<Sidebar.MenuButton  
 					class={cn(
 						'hover:bg-muted hover:text-foreground cursor-pointer',
-						page.url.pathname === item.url &&
+						basePath === item.url &&
 						'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground'
 					)}
 					onclick={()=>goto(item.url)}

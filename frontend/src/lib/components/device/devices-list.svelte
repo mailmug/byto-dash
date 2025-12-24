@@ -6,9 +6,9 @@
     import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "$lib/components/ui/card";
     import { Badge } from "$lib/components/ui/badge";
     import ArrowRight from "@tabler/icons-svelte/icons/arrow-right";
-    import Label from "../ui/label/label.svelte";
     import { onMount } from "svelte";
     import { api } from "@/services/http";
+    import { goto } from "$app/navigation";
     
     type Device = {
         id: number;
@@ -106,10 +106,9 @@
 
         <CardFooter class="flex gap-2">
             <Button
-            class="flex-1"
+            class="flex-1 cursor-pointer"
             onclick={() => {
-                showEditDeviceModal = true;
-                editDeviceData = device;
+                goto('/dashboard/devices/'+device.id)
             }}
             >
                 Device

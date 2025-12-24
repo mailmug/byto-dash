@@ -40,3 +40,25 @@ async def list_devices(
     result = await session.execute(stmt)
     devices = result.scalars().all()
     return devices
+
+
+from fastapi import HTTPException
+from sqlalchemy import select
+
+@router.get("/{device_id}", response_model=DeviceRead)
+async def get_device(
+    device_id: int,
+    user: User = Depends(current_active_user),
+    session: AsyncSession = Depends(get_async_session),
+):
+    stmt = select(Device).where(
+        Device.id == device_id,
+        Device.user_id == user.id
+    )
+    result = await session.execute(stmt)
+    device = result.scalars().first()
+
+    if not device:
+        raise HTTPException(status_code=404, detail="Device not found")
+
+    return device

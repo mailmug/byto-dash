@@ -157,7 +157,7 @@
             <Dialog.Footer class="flex flex-row justify-center gap-2">
                 <Button
                     variant="secondary"
-                    class="flex-1 sm:flex-none"
+                    class="flex-1 sm:flex-none cursor-pointer"
                     onclick={()=>{
                         open = false;
                         resetForm();
@@ -168,7 +168,7 @@
 
                 <Button
                     type="submit"
-                    class="flex-1 sm:flex-none"
+                    class="flex-1 sm:flex-none cursor-pointer"
                     disabled={loading}>
 						{#if loading}
 							<span class="loader w-4 h-4 border-2 border-t-transparent rounded-full animate-spin"></span>
