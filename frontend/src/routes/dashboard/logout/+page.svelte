@@ -3,9 +3,14 @@
 	import { Button } from "$lib/components/ui/button";
 	import { authStore } from "$lib/stores/auth.store";
 	import { goto } from "$app/navigation";
+    import { onMount } from "svelte";
     import { pageTitle } from "$lib/stores/title";
 
 	let open = $state(true);
+
+    onMount(()=>{
+        pageTitle.set('Logout');
+    });
 
 	function logout() {
 		authStore.set({ token: null, user: null });
@@ -30,7 +35,7 @@
             <Dialog.Footer class="gap-2 sm:justify-end">
                 <Button
                     variant="outline"
-                    onclick={()=>{goto('/dashboard'); pageTitle.set('Dashboard')}}
+                    onclick={()=>goto('/dashboard')}
                 >
                     Cancel
                 </Button>

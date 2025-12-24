@@ -7,7 +7,6 @@
     import { goto } from "$app/navigation";
     import { page } from "$app/state";
     import { cn } from "@/utils";
-    import { pageTitle } from "@/stores/title";
 	
 	let { items }: { items: { title: string; url: string; icon?: Icon }[] } = $props();
 </script>
@@ -42,7 +41,7 @@
 						page.url.pathname === item.url &&
 						'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground'
 					)}
-					onclick={()=>{goto(item.url); pageTitle.set(item.title)} }
+					onclick={()=>goto(item.url)}
 					tooltipContent={item.title}>
 						{#if item.icon}
 							<item.icon />

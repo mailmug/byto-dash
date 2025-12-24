@@ -7,6 +7,7 @@
     import { me } from "@/services/auth.service";
     import { api } from "@/services/http";
     import { authStore } from "@/stores/auth.store";
+    import { pageTitle } from "@/stores/title";
     import { passwordSchema, registerSchema } from "@/validation/register.schema";
     import { onMount } from "svelte";
     import { toast } from "svelte-sonner";
@@ -133,6 +134,7 @@
     }
 
     onMount(()=>{
+        pageTitle.set('Profile');
         me().then((data)=>{ 
             if(data.is_verified === false){  
                 goto('/verify-user');
