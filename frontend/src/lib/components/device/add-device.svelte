@@ -9,6 +9,7 @@
     import * as Field from "$lib/components/ui/field";
     import { api } from "@/services/http";
     import { toast } from "svelte-sonner";
+    import { devices } from "@/stores/devices";
 
     let deviceName  = $state("");
     let description = $state("");
@@ -73,6 +74,15 @@
                 loading = false;
                 resetForm();
             }
+            api('/api/v1/devices/', {
+                method: 'GET',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+            }).then(data=>{
+                devices.set(data);
+            });
         });
     }
 </script>

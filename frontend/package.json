@@ -45,6 +45,7 @@
 		"vite": "^7.2.6"
 	},
 	"dependencies": {
+		"sveltekit-top-loader": "^0.1.0",
 		"zod": "^4.1.13"
 	}
 }

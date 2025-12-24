@@ -47,7 +47,7 @@ from sqlalchemy import select
 
 @router.get("/{device_id}", response_model=DeviceRead)
 async def get_device(
-    device_id: int,
+    device_id: str,
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
 ):

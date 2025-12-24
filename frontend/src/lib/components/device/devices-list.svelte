@@ -1,49 +1,31 @@
 <script lang="ts">
 	import { Button } from "$lib/components/ui/button";
-   
     import { Switch } from "$lib/components/ui/switch/index.js";
-
     import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "$lib/components/ui/card";
     import { Badge } from "$lib/components/ui/badge";
     import ArrowRight from "@tabler/icons-svelte/icons/arrow-right";
     import { onMount } from "svelte";
     import { api } from "@/services/http";
-    import { goto } from "$app/navigation";
-    
-    type Device = {
-        id: number;
-        title: string;
-        type: string;
-        status: string;
-        isOn: boolean;
-        last_active: string;
-        description?: string;
-    };
-
-    let devices = $state<Device[]>([]);      
+    import { goto } from "$app/navigation";   
+    import { devices } from "$lib/stores/devices";
 
     onMount(()=>{
-          api('/api/v1/devices/', {
+        api('/api/v1/devices/', {
             method: 'GET',
             headers: { 
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
             },
         }).then(data=>{
-            devices = data;
+            devices.set(data);
         });
     });
 
-    let showEditDeviceModal = false;
-    let editDeviceData = null;
 
     function toggleDevice(device:any) {
         device.isOn = !device.isOn;
     }
 
-    function confirmRemoveDevice(device: any) {
-        devices = devices.filter(d => d.id !== device.id);
-    }
 </script>
 
 <!-- Devices Grid -->
@@ -51,13 +33,12 @@
   class="*:data-[slot=card]:from-primary/5 
          *:data-[slot=card]:to-card 
          dark:*:data-[slot=card]:bg-card
-         grid grid-cols-1 gap-4 px-4
+         grid grid-cols-1 gap-4 
          *:data-[slot=card]:bg-gradient-to-t
          *:data-[slot=card]:shadow-xs
-         lg:grid-cols-3
-         lg:px-6"
+         lg:grid-cols-3"
 >
-{#each devices as device (device.id)}
+{#each $devices as device (device.id)}
     <Card>
         <CardHeader>
             <CardTitle class="text-xl">{device.title}</CardTitle>

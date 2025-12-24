@@ -7,7 +7,6 @@
     import { goto } from "$app/navigation";
     import { page } from "$app/state";
     import { cn } from "@/utils";
-    import { onMount } from "svelte";
 	
 	let { items }: { items: { title: string; url: string; icon?: Icon }[] } = $props();
 	

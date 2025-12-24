@@ -9,7 +9,7 @@
     });
 </script>
 
-<div class="flex flex-col gap-4 py-4 md:gap-6 md:py-6 p-4">
+<div class="flex flex-col gap-4 py-4 md:p-8 md:gap-6 md:py-6">
     <div class="flex w-full sm:justify-end">
         <AddDevice />
     </div>
