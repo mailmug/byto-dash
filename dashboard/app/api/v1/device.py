@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 from app.models.device import Device
@@ -62,3 +62,24 @@ async def get_device(
         raise HTTPException(status_code=404, detail="Device not found")
 
     return device
+
+
+@router.delete("/{device_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_device(
+    device_id: str,
+    user: User = Depends(current_active_user),
+    session: AsyncSession = Depends(get_async_session),
+):
+    # Ensure the device belongs to the user
+    stmt = select(Device).where(Device.id == device_id, Device.user_id == user.id)
+    result = await session.execute(stmt)
+    device = result.scalars().first()
+
+    if not device:
+        raise HTTPException(status_code=404, detail="Device not found")
+
+    # Delete the device
+    await session.delete(device)
+    await session.commit()
+
+    return None
