@@ -8,6 +8,8 @@ from app.models.user import User
 from app.db.session import get_async_session
 from app.schemas.device import DeviceCreate, DeviceRead
 from sqlalchemy.future import select
+from fastapi import HTTPException
+from sqlalchemy import select
 
 router = APIRouter()
 
@@ -41,9 +43,6 @@ async def list_devices(
     devices = result.scalars().all()
     return devices
 
-
-from fastapi import HTTPException
-from sqlalchemy import select
 
 @router.get("/{device_id}", response_model=DeviceRead)
 async def get_device(

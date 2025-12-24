@@ -16,6 +16,7 @@
     import DialogDescription from '@/components/ui/dialog/dialog-description.svelte';
     import DialogFooter from '@/components/ui/dialog/dialog-footer.svelte';
     import DialogClose from '@/components/ui/dialog/dialog-close.svelte';
+    import { toast } from 'svelte-sonner';
 
 	const id = page.params.id;
 	let device: Device;
@@ -56,6 +57,7 @@
 			},
 		});
 
+        toast.success('Successfully deleted!')
         api('/api/v1/devices/', {
             method: 'GET',
             headers: { 

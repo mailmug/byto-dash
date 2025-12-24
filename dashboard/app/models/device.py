@@ -18,7 +18,7 @@ class Device(Base):
     type = Column(String(200), nullable=False)
     status = Column(String(50), nullable=False, default="offline")
     is_on = Column(Boolean, nullable=False, default=False)
-    last_active = Column(DateTime, nullable=False, default=datetime.utcnow)
+    last_active = Column(DateTime, nullable=True)
     description = Column(Text, nullable=True)
 
     user_id = Column(

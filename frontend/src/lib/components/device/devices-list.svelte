@@ -8,6 +8,7 @@
     import { api } from "@/services/http";
     import { goto } from "$app/navigation";   
     import { devices } from "$lib/stores/devices";
+    import { timeAgo } from "@/helpers/timeAgo";
 
     onMount(()=>{
         api('/api/v1/devices/', {
@@ -61,8 +62,8 @@
                     </Badge>
                     </div>
                     <p class="text-sm text-muted-foreground">
-                        {#if device.status === "offline"}
-                        Last Active: {device.last_active}
+                        {#if device.status === "offline" && device.last_active}
+                        Last Active: {timeAgo(device.last_active)}
                         {/if} &nbsp;
                     </p>
                 </div>
@@ -81,7 +82,7 @@
                 <p>
                     <strong>Type:</strong> {device.type}
                 </p>
-                <p>{device.description}</p>
+                <p>{device.description}&nbsp;</p>
             </div>
         </CardContent>
 
