@@ -1,7 +1,9 @@
-# 🚀 FastAPI + Svelte Dashboard (Byto-Dash)
-
+<h1 align="center">
+  🚀 FastAPI + Svelte Dashboard (Byto-Dash)
+</h1>
 <div align="center">
-  
+  # 🚀 FastAPI + Svelte Dashboard (Byto-Dash)
+
   ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
   ![Svelte](https://img.shields.io/badge/SvelteKit-FF3E00?style=for-the-badge&logo=svelte&logoColor=white)
   ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
