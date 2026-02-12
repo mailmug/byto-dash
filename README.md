@@ -1,4 +1,15 @@
-# FastAPI + Svelte Dashboard (Byto-Dash)
+# 🚀 FastAPI + Svelte Dashboard (Byto-Dash)
+
+<div align="center">
+  
+  ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+  ![Svelte](https://img.shields.io/badge/SvelteKit-FF3E00?style=for-the-badge&logo=svelte&logoColor=white)
+  ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+  ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+  ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+
+  **A modern, full-stack dashboard application with real-time capabilities**
+</div>
 
 A full-stack web application with **FastAPI** backend and **SvelteKit** frontend.  
 This dashboard allows you to manage data, visualize metrics, and interact with APIs in real-time.
