@@ -19,3 +19,12 @@ This dashboard allows you to manage data, visualize metrics, and interact with A
 - **Authentication:** JWT / OAuth (optional)
 - **Deployment:** Docker / Uvicorn / Nginx
 
+
+
+  ## 📸 Screenshot
+
+![byto‑dash overview](https://raw.githubusercontent.com/mailmug/byto-dash/9d70ebd632c85af33c0bb05957a4ed0b26d56653/Screenshot-1.png)
+![byto‑dash overview](https://raw.githubusercontent.com/mailmug/byto-dash/9d70ebd632c85af33c0bb05957a4ed0b26d56653/Screenshot-2.png)
+
+
+
